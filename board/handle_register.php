@@ -1,4 +1,5 @@
 <?php
+  session_start();
   require_once('conn.php');
 
   if (empty($_POST['username'])||empty($_POST['nickname'])||empty($_POST['password'])) {
@@ -8,7 +9,8 @@
 
   $username = $_POST['username'];
   $nickname = $_POST['nickname'];
-  $password = $_POST['password'];
+  ///////// 加入password_hash把密碼雜湊 ////////
+  $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
   //sprintf可以動態塞入我們的變數
   $sql = sprintf(
     "insert into users(username,nickname,password) values('%s','%s','%s')",
@@ -29,6 +31,7 @@
 		}
     die($conn->error);
   }
-  // 會自動跳轉到index.php
+  //////// 然後我們可以直接加入$SESSION[‘username’]達成註冊後立刻登入的情況 ///////
+  $_SESSION['username'] = $username;
   header("Location: index.php");
 ?>
