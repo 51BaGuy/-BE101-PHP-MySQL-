@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	require_once('conn.php');
 	require_once('utils.php');
 
@@ -22,20 +23,17 @@
     die($conn->error);
 	}
 	
+	////// 把token亂數跟名稱username存入tokens table裡面，並且把token亂數取出放到cookie裡面做為我們的通行證//////
   // time()表示為現在時間
   $expire = time()+3600 * 24 * 30; // 30 day; 
   if($result->num_rows){
-		// 建立 token 並儲存
-		$token = generateToken();
-		$sql = sprintf(
-			"INSERT INTO tokens (token,username) values('%s','%s')",
-			$token,
-			$username);
-		$result = $conn->query($sql);
-		if(!$result){
-			die($conn->error);
-		}	
-		setcookie("token", $token,$expire);
+		/*
+      1. 產生 session id (token)
+      2. 把 username 寫入檔案
+      3. set-cookie: session-id
+    */
+		// 我們把上面的$_POST['username']存入
+		$_SESSION['username'] = $username;
 		header('Location: ./index.php');
   } else{
     header('Location: ./login.php?errCode=2');

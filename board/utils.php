@@ -12,17 +12,8 @@
 
     //////  把用token找到username，再用username找到我們的nickname，這段過程寫進去utils.php裡面，去做一個函式，好方便使用 ///////
     // 這裡函式的參數就是要我們把通行證擺進去用的
-    function getUserFromToken($token){
+    function getUserFromUsername($username){
         global $conn;
-        // 我們要在function裡面引用conn，要加global
-        $sql = sprintf(
-            "select username from tokens where token = '%s'",
-            $token
-        );
-        $result = $conn->query($sql);
-        $row = $result->fetch_assoc();
-        $username = $row['username'];
-
         $sql = sprintf("select * from users where username = '%s'",
         $username
         );

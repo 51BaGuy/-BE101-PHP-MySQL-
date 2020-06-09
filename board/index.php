@@ -1,11 +1,16 @@
 <?php
+    session_start();
     require_once('conn.php');
     require_once('utils.php');
     // index.php藉由我們從cookie拿到的通行證去交換username的資料
+     /*
+    1. 從 cookie 裡面讀取 PHPSESSID(token)
+    2. 從檔案裡面讀取 session id 的內容
+    3. 放到 $_SESSION
+    */
     $username = Null;
-    if(!empty($_COOKIE['token'])){
-      $user = getUserFromToken($_COOKIE['token']);
-      $username = $user['username'];
+    if(!empty($_SESSION['username'])){
+      $username = $_SESSION['username'];
     }
     // 記得把index.php把comments的$result移下去，不然下面會吃不到我們的$result
     $sql = "SELECT * FROM comments ORDER BY created_at desc"; 
@@ -36,7 +41,7 @@
             <a class="board__btn" href="register.php">註冊</a>
             <a class="board__btn" href="login.php">登入</a>
         <?php } else { ?>
-            <h2>你好 <?php echo $username?></h2>
+           
             <a class="board__btn" href="logout.php">登出</a>
         <?php } ?> 
       </div>
