@@ -1,5 +1,6 @@
 <?php
-  require_once('conn.php');
+	require_once('conn.php');
+	require_once('utils.php');
 
   if (empty($_POST['username'])||empty($_POST['password'])) {
     header('Location: ./login.php?errCode=1');
@@ -19,11 +20,22 @@
   //   這裡結果會吃不到，表示你的sql語法寫錯，不是代表找不到你的結果
   if (!$result) {
     die($conn->error);
-  }
+	}
+	
   // time()表示為現在時間
   $expire = time()+3600 * 24 * 30; // 30 day; 
-  if($result->fetch_assoc()){
-		setcookie("username", $username,$expire);
+  if($result->num_rows){
+		// 建立 token 並儲存
+		$token = generateToken();
+		$sql = sprintf(
+			"INSERT INTO tokens (token,username) values('%s','%s')",
+			$token,
+			$username);
+		$result = $conn->query($sql);
+		if(!$result){
+			die($conn->error);
+		}	
+		setcookie("token", $token,$expire);
 		header('Location: ./index.php');
   } else{
     header('Location: ./login.php?errCode=2');

@@ -1,13 +1,17 @@
 <?php
-    require_once("./conn.php");
+    require_once('conn.php');
+    require_once('utils.php');
+    // index.php藉由我們從cookie拿到的通行證去交換username的資料
+    $username = Null;
+    if(!empty($_COOKIE['token'])){
+      $user = getUserFromToken($_COOKIE['token']);
+      $username = $user['username'];
+    }
+    // 記得把index.php把comments的$result移下去，不然下面會吃不到我們的$result
     $sql = "SELECT * FROM comments ORDER BY created_at desc"; 
     $result = $conn->query($sql);
     if(!$result){
       die('Error:'. $conn->error);
-    }
-    $username = Null;
-    if(!empty($_COOKIE['username'])){
-      $username = $_COOKIE['username'];
     }
 
 ?>
@@ -32,6 +36,7 @@
             <a class="board__btn" href="register.php">註冊</a>
             <a class="board__btn" href="login.php">登入</a>
         <?php } else { ?>
+            <h2>你好 <?php echo $username?></h2>
             <a class="board__btn" href="logout.php">登出</a>
         <?php } ?> 
       </div>
