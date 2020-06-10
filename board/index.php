@@ -92,7 +92,7 @@
           </div>
           <div class="card__body">
               <div class="card__info">
-                <span class="card__author"><?php echo escape($row['nickname'])?></span>
+                <span class="card__author"><?php echo escape($row['username'])?></span>
                 <span class="card__time"><?php echo escape($row['created_at'])?></span>
               </div>
               <p class="card__content">
