@@ -12,13 +12,11 @@
   ///////// 加入password_hash把密碼雜湊 ////////
   $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
   //sprintf可以動態塞入我們的變數
-  $sql = sprintf(
-    "insert into users(username,nickname,password) values('%s','%s','%s')",
-    $username,
-    $nickname,
-    $password
-  );
-  $result = $conn->query($sql);
+  $sql ="insert into users(username,nickname,password) values(?,?,?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param('sss',$username,$nickname,$password);
+  $result = $stmt->execute();
+    
   // 如果沒有成功執行sql，這樣會報錯
   if (!$result) {
 	// 	// 這邊是直接去看find word錯誤指令怎麼打(但是這個作法比較不精準)

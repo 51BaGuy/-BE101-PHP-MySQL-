@@ -11,17 +11,18 @@
   $username = $_POST['username'];
   $password = $_POST['password'];
 	
-	///// 判斷機制變成只判斷username，因為password hash後無法直接這樣判斷了//////
-  $sql = sprintf(
-    "SELECT * FROM users WHERE username ='%s'",
-    $username
-  );
-  $result = $conn->query($sql);
+	///////每個有sql的地方把她prepared statement////////
+	$sql = "SELECT * FROM users WHERE username = ?";
+	$stmt = $conn->prepare($sql);
+	$stmt->bind_param('s',$username);
+  $result = $stmt->execute();
   //   這裡結果會吃不到，表示你的sql語法寫錯，不是代表找不到你的結果
   if (!$result) {
     die($conn->error);
 	}
 
+	//////當你看到$result的時候，記得get_result()把結果拿回來////////
+	$result=$stmt->get_result();
 	/////先檢查有沒有查到user，沒有查到結束，如果有查到就把使用者拉出來，然後加入password_verify把我們輸入的的密碼跟資料庫hash過的密碼去比對看是不是一樣的//////
 	if($result->num_rows===0){
 		header('Location: ./login.php?errCode=2');

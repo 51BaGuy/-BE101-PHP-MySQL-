@@ -12,14 +12,16 @@
   $nickname=$user['nickname'];
   
   $content = $_POST['content'];
-  //sprintf可以動態塞入我們的變數
-  $sql = sprintf(
-    "insert into comments(nickname,content) values('%s','%s')",
-    $nickname,
-    $content
-  );
-  $result = $conn->query($sql);
-  // 如果沒有成功執行sql，這樣會報錯
+
+  ////// 每個有sql的地方把她prepared statement //////
+  // 這邊把原本的字串拼接變成用問號
+  $sql ="insert into comments(nickname,content) values(?,?)";
+  // 再來對$sql做prepare
+  $stmt = $conn->prepare($sql);
+  // 這邊是把參數放進去，看你有幾個參數就有幾個s(s=String)
+  $stmt->bind_param('ss',$nickname,$content);
+  // 這邊就是去執行
+  $result = $stmt->execute();
   if (!$result) {
     die($conn->error);
   }

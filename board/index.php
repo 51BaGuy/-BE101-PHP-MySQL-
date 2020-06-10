@@ -14,10 +14,12 @@
     }
     // 記得把index.php把comments的$result移下去，不然下面會吃不到我們的$result
     $sql = "SELECT * FROM comments ORDER BY created_at desc"; 
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare($sql);
+    $result=$stmt->execute();
     if(!$result){
       die('Error:'. $conn->error);
     }
+    $result = $stmt->get_result();
 
 ?>
 
