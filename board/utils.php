@@ -10,8 +10,7 @@
         return $s;
     }
 
-    //////  把用token找到username，再用username找到我們的nickname，這段過程寫進去utils.php裡面，去做一個函式，好方便使用 ///////
-    // 這裡函式的參數就是要我們把通行證擺進去用的
+    ///// utils.php修改我們函式，用出一個可以去資料庫取出我們users table數據的函式//////
     function getUserFromUsername($username){
         global $conn;
         $sql = sprintf("select * from users where username = '%s'",
@@ -20,6 +19,11 @@
         $result = $conn->query($sql);
         $row = $result->fetch_assoc();
         return $row;
+    }
+
+    ////////要用html_specialcharts去utils.php寫成function////////
+    function escape($str){
+        return htmlspecialchars($str, ENT_QUOTES);
     }
 
 ?>

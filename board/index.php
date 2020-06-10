@@ -2,7 +2,7 @@
     session_start();
     require_once('conn.php');
     require_once('utils.php');
-    // index.php藉由我們從cookie拿到的通行證去交換username的資料
+    /////// 從cookie讀取PHPSESSID，並且讀取session id裡面username的內容，然後放到_SESSION裡面去給$username讀取///////
      /*
     1. 從 cookie 裡面讀取 PHPSESSID(token)
     2. 從檔案裡面讀取 session id 的內容
@@ -41,7 +41,6 @@
             <a class="board__btn" href="register.php">註冊</a>
             <a class="board__btn" href="login.php">登入</a>
         <?php } else { ?>
-           
             <a class="board__btn" href="logout.php">登出</a>
         <?php } ?> 
       </div>
@@ -76,11 +75,11 @@
           </div>
           <div class="card__body">
               <div class="card__info">
-                <span class="card__author"><?php echo $row['nickname']?></span>
-                <span class="card__time"><?php echo $row['created_at']?></span>
+                <span class="card__author"><?php echo escape($row['nickname'])?></span>
+                <span class="card__time"><?php echo escape($row['created_at'])?></span>
               </div>
               <p class="card__content">
-              <?php echo $row['content']?>
+              <?php echo escape($row['content'])?>
               </p>
           </div>
         </div>
