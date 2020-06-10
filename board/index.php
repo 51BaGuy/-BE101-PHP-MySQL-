@@ -8,9 +8,12 @@
     2. 從檔案裡面讀取 session id 的內容
     3. 放到 $_SESSION
     */
+    ///// 去修改index.php讓我們可以取得users table裡面的資料//////
     $username = Null;
+    $user = Null ;
     if(!empty($_SESSION['username'])){
       $username = $_SESSION['username'];
+      $user = getUserFromUsername($username);
     }
     // 記得把index.php把comments的$result移下去，不然下面會吃不到我們的$result
     $sql = "SELECT * FROM comments ORDER BY created_at desc"; 
@@ -44,6 +47,18 @@
             <a class="board__btn" href="login.php">登入</a>
         <?php } else { ?>
             <a class="board__btn" href="logout.php">登出</a>
+            <!-- 在來設計一個update_user.php，去做編輯暱稱的功能 -->
+            <span class="board__btn update-nickname">編輯暱稱</span>
+            <!-- 在index.php直接放一個表單，去做一個新的暱稱，可以用之前的class -->
+            <form class="hide board__nickname-form board__new-comment-form" method="POST" action="update_user.php">
+              <div class="board__nickname">
+                <span>新的暱稱：</span>
+                <input type="text" name="nickname" />
+              </div>
+              <input class="board__submit-btn" type="submit" />
+            </form>
+            <!-- 再去裡面把nickname撈出來，可以放一個確認的訊息，讓暱稱跑出來 -->
+            <h3>你好！<?php echo $user['nickname'] ?></h3>
         <?php } ?> 
       </div>
       <h1 class="board__title">Comments</h1>
@@ -88,5 +103,12 @@
         <?php } ?>
       </section>
   </main>
+  <script>
+    var btn = document.querySelector('.update-nickname')
+    btn.addEventListener('click', function() {
+      var form = document.querySelector('.board__nickname-form')
+      form.classList.toggle('hide')
+    })
+  </script>
 </body>
 </html> 

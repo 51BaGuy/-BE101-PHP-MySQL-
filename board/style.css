@@ -108,3 +108,10 @@ body {
     color: #a0a0a0;
   } 
 
+  .board__nickname-form {
+    margin-top: 20px;
+  }
+  
+  .hide {
+    display: none;
+  }
