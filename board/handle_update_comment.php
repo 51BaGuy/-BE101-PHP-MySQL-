@@ -3,21 +3,22 @@
   require_once('conn.php');
   require_once('utils.php');
 
-  if (empty($_POST['nickname'])) {
-    header('Location: ./index.php?errCode=1');
+  if (empty($_POST['content'])) {
+    header('Location: ./update_comment.php?errCode=1&id=$_POST["id"]');
     die('資料不齊全');
   }
-//   我們要改當前使用者的暱稱，所以我們要用username當作我們的基準
-  $username =$_SESSION['username'];
-  $nickname =$_POST['nickname'];
+  ////// 使用函式，並且放入$_SESSION['username']把我username這個資料丟給SESSION //////
+  $username = $_SESSION['username'];
+  
+  $content = $_POST['content'];
 
   ////// 每個有sql的地方把她prepared statement //////
   // 這邊把原本的字串拼接變成用問號
-  $sql ="update users set nickname = ? where username = ?";
+  $sql ="update comments set content = ? where username = ?";
   // 再來對$sql做prepare
   $stmt = $conn->prepare($sql);
   // 這邊是把參數放進去，看你有幾個參數就有幾個s(s=String)
-  $stmt->bind_param('ss',$nickname,$username);
+  $stmt->bind_param('ss',$content,$username);
   // 這邊就是去執行
   $result = $stmt->execute();
   if (!$result) {

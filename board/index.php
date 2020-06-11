@@ -101,9 +101,16 @@
               <div class="card__info">
                 <span class="card__author">
                   <?php echo escape($row['nickname'])?>
+                  <!-- 做一個帳號顯示來做個區別 -->
                   (@<?php echo escape($row['username'])?>)
                 </span>
-                <span class="card__time"><?php echo escape($row['created_at'])?></span>
+                <span class="card__time">
+                  <?php echo escape($row['created_at'])?>
+                </span>
+                <!-- 我們那一留言欄的username要跟我們當前的username一致才可以修改 -->
+                <?php if ($row['username']===$username){ ?> 
+                <a href="update_comment.php?id=<?php echo $row['id'] ?>">編輯</a>
+                <?php } ?>  
               </div>
               <p class="card__content">
               <?php echo escape($row['content'])?>
