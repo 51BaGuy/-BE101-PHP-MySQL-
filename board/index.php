@@ -16,8 +16,15 @@
       $user = getUserFromUsername($username);
     }
     // 記得把index.php把comments的$result移下去，不然下面會吃不到我們的$result
-    $sql = "SELECT * FROM comments ORDER BY created_at desc"; 
-    $stmt = $conn->prepare($sql);
+    // 這邊用字串拼接的方式去串起來，記得要空格!!!!!
+    $stmt = $conn->prepare(
+      'select ' .
+        'C.id as id , C.content as content , C.created_at as created_at, '.
+        'U.nickname as nickname , U.username as username '.
+      'from comments as C '.
+      'left join users as U on C.username = U.username '.
+      'order by C.id desc'
+    );
     $result=$stmt->execute();
     if(!$result){
       die('Error:'. $conn->error);
@@ -92,7 +99,10 @@
           </div>
           <div class="card__body">
               <div class="card__info">
-                <span class="card__author"><?php echo escape($row['username'])?></span>
+                <span class="card__author">
+                  <?php echo escape($row['nickname'])?>
+                  (@<?php echo escape($row['username'])?>)
+                </span>
                 <span class="card__time"><?php echo escape($row['created_at'])?></span>
               </div>
               <p class="card__content">
