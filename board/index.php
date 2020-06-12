@@ -23,12 +23,13 @@
         'U.nickname as nickname , U.username as username '.
       'from comments as C '.
       'left join users as U on C.username = U.username '.
+      'where C.is_deleted IS NULL '.
       'order by C.id desc'
     );
     $result=$stmt->execute();
-    if(!$result){
-      die('Error:'. $conn->error);
-    }
+    // if(!$result){
+    //   die('Error:'. $conn->error);
+    // }
     $result = $stmt->get_result();
 
 ?>
@@ -110,6 +111,7 @@
                 <!-- 我們那一留言欄的username要跟我們當前的username一致才可以修改 -->
                 <?php if ($row['username']===$username){ ?> 
                 <a href="update_comment.php?id=<?php echo $row['id'] ?>">編輯</a>
+                <a href="delete_comment.php?id=<?php echo $row['id'] ?>">刪除</a>
                 <?php } ?>  
               </div>
               <p class="card__content">
