@@ -17,6 +17,18 @@
     }
     // 記得把index.php把comments的$result移下去，不然下面會吃不到我們的$result
     // 這邊用字串拼接的方式去串起來，記得要空格!!!!!
+
+    ////// 先實作每頁取幾筆，下一頁繼續取 /////
+    // 先設立頁面為1有個基準點
+    $page = 1;
+    // 如果有取到頁面
+    if(!empty($_GET['page'])){
+      $page = $_GET['page'];
+    }
+    // 每頁取幾筆資料
+    $items_per_page = 1;
+    // 本頁是從第幾筆資料開始取
+    $offset = ($page-1)*$items_per_page;
     $stmt = $conn->prepare(
       'select ' .
         'C.id as id , C.content as content , C.created_at as created_at, '.
@@ -24,12 +36,15 @@
       'from comments as C '.
       'left join users as U on C.username = U.username '.
       'where C.is_deleted IS NULL '.
-      'order by C.id desc'
+      'order by C.id desc '.
+      'limit ? offset ? '
     );
+    // 把變數合併進去
+    $stmt->bind_param('ii',$items_per_page,$offset);
     $result=$stmt->execute();
-    // if(!$result){
-    //   die('Error:'. $conn->error);
-    // }
+    if(!$result){
+      die('Error:'. $conn->error);
+    }
     $result = $stmt->get_result();
 
 ?>
@@ -121,6 +136,35 @@
         </div>
         <?php } ?>
       </section>
+      <!-- 做個分隔線 -->
+      <div class="board__hr"></div>
+      <?php
+        // 取出所有為Null的資料
+        $stmt = $conn->prepare(
+          'select count(id) as count from comments where is_deleted IS NULL'
+        );
+        $result=$stmt->execute();
+        $result=$stmt->get_result();
+        $row = $result->fetch_assoc();
+        // 取出所有筆資料
+        $count = $row['count'];
+        // 算出總頁數，無條件進位
+        $total_page = ceil($count/$items_per_page);
+      ?>
+      <div class="page-info">
+        <span>總共有<?php echo $count?>筆留言，頁數:</span>
+        <span><?php echo $page?>/<?php echo $total_page?></span>
+      </div>
+      <div class="paginator">
+        <?php if($page != 1){ ?>
+          <a href="index.php?page=1">首頁</a>
+          <a href="index.php?page=<?php echo $page - 1?>">上一頁</a>
+        <?php } ?>
+        <?php if($page != $total_page){ ?>
+          <a href="index.php?page=<?php echo $page + 1?>">下一頁</a>
+          <a href="index.php?page=<?php echo $total_page?>">最後一頁</a>
+        <?php } ?>  
+      </div>
   </main>
   <script>
     var btn = document.querySelector('.update-nickname')
