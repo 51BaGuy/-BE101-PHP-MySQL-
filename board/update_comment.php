@@ -15,12 +15,13 @@
       $username = $_SESSION['username'];
       $user = getUserFromUsername($username);
     }
-    // 這邊要取出我們丟的id去找相對應的評論
+		// 這邊要取出我們丟的id去找相對應的評論
+		//加上username讓我們只能顯示當前使用者的留言
     $id = $_GET['id'];
     $stmt = $conn->prepare(
-      'select * from comments where id = ? '
+      'select * from comments where id = ? and username = ?'
     );
-    $stmt->bind_param('i',$id);
+    $stmt->bind_param('is',$id,$username);
     $result=$stmt->execute();
     if(!$result){
       die('Error:'. $conn->error);

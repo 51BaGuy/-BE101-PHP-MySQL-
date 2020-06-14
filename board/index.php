@@ -23,10 +23,10 @@
     $page = 1;
     // 如果有取到頁面
     if(!empty($_GET['page'])){
-      $page = $_GET['page'];
+      $page = intval($_GET['page']);
     }
     // 每頁取幾筆資料
-    $items_per_page = 1;
+    $items_per_page = 10;
     // 本頁是從第幾筆資料開始取
     $offset = ($page-1)*$items_per_page;
     $stmt = $conn->prepare(

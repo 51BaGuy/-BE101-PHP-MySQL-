@@ -9,11 +9,12 @@
   }
   ////// 使用函式，並且放入$_SESSION['username']把我username這個資料丟給SESSION //////
   $username = $_SESSION['username'];
-  
+  $id = $_POST['id'];
   $content = $_POST['content'];
 
   ////// 每個有sql的地方把她prepared statement //////
   // 這邊把原本的字串拼接變成用問號
+  // 加上username讓我們只能讓當前使用者去改
   $sql ="update comments set content = ? where username = ?";
   // 再來對$sql做prepare
   $stmt = $conn->prepare($sql);
